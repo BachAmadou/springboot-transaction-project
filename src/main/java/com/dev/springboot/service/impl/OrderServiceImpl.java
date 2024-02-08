@@ -36,16 +36,16 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderTrackingNumber(UUID.randomUUID().toString());
         orderRepository.save(order);
 
-        Payment payment = orderRequest.getPayment();
 
+        // 2 - Save the payment details
+        Payment payment = orderRequest.getPayment();
         if(!payment.getType().equals("DEBIT")) {
             throw new PaymentException("Payment type is not supported");
         }
-
-        // 2 - Save the payment details
         payment.setOrderId(order.getId());
         paymentRepository.save(payment);
 
+        // Once payment is done correctly
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setOrderTrackingNumber(order.getOrderTrackingNumber());
         orderResponse.setStatus(order.getStatus());
